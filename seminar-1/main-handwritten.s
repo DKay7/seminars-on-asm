@@ -1,31 +1,18 @@
-; main-handwritten (NASM, Linux x86-64)
-; RUN: nasm -f elf64 main-handwritten.asm -o main.o
-; RUN: ld main.o -o main-handwritten
-; RUN: ./hello
-; RUN: hexdump main.o -C
-; RUN: objdump main.o -s
+; RUN: ../utils/build_asm.sh main-handwritten.s
+; RUN: ./main-handwritten
 
-global _start
+global main
+extern io_print_string ; it is like function declaration in C
 
 section .data
-msg db "Hello, world!", 10 ; 10 is ASCII-code of \n
+    msg db `Hello, world!\n`, 0 ; define a sequence of bytes, a NULL-terminated string
+    len equ $ - msg             ; compute len as difference between cur ptr and msg ptr
 
-len equ $ - msg
-
-array db 100 dup 10
-array_len equ $ - array
 
 section .text
-_start:
-    ; write(1, msg, len)
-    mov rax, 1          ; syscall nummber: sys_write
-    mov rdi, 1          ; fd = stdout
-    mov rsi, msg        ; buffer
-    mov rdx, len        ; count
-    syscall
+main:
+    mov eax, msg            ; io_print_string expects pointer to string in EAX reg
+    call io_print_string    ; call io_print_string
 
-    ; exit(0)
-    mov rax, 60         ; syscall number: sys_exit xor rdi, rdi        ; status = 0
-    mov rdi, 0
-    syscall
-
+    xor eax, eax ; more efficient than mov eax, 0
+    ret          ; ret from main with return code = eax = 0
