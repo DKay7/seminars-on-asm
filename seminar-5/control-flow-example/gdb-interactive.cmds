@@ -1,0 +1,20 @@
+set disassembly-flavor intel
+file ./eip-control-flow
+
+define hook-stop
+    python
+import gdb
+try:
+    eip = int(gdb.parse_and_eval("$eip")) & 0xFFFFFFFF
+    gdb.write("EIP = 0x%08x\n" % eip)
+    gdb.execute("x/i $eip")
+except gdb.error:
+    pass
+end
+end
+
+break main
+run
+layout src
+printf "\nStopped at main. Use 'si' / 'ni' / 'c'.\n"
+printf "EIP is printed automatically after each stop.\n\n"
