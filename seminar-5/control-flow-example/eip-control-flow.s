@@ -11,15 +11,7 @@ section .data
 
 section .text
 
-; -----------------------------------------------
-; dispatch_sign
-;
-; select message by signed value in EAX
-;
-; EXPECTS:  EAX -- signed value
-; DESTROYS: EAX
-; RETURNS:  None
-; -----------------------------------------------
+
 dispatch_sign:
     cmp eax, 0
     jl .neg
@@ -35,30 +27,12 @@ dispatch_sign:
 
 .neg:
     mov eax, negative_msg
-    jmp print_msg
 
-; -----------------------------------------------
-; print_msg
-;
-; print zero-terminated string from EAX
-;
-; EXPECTS:  EAX -- pointer to string
-; DESTROYS: EAX
-; RETURNS:  None
-; -----------------------------------------------
 print_msg:
     call io_print_string
+    call io_newline
     ret
 
-; -----------------------------------------------
-; main
-;
-; run one demonstration case for dispatch_sign
-;
-; EXPECTS:  None
-; DESTROYS: EAX
-; RETURNS:  EAX = 0
-; -----------------------------------------------
 main:
     mov eax, -1
     call dispatch_sign
