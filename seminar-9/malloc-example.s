@@ -21,9 +21,10 @@ main:
     mov     ebp, esp
 
     ; void *malloc(size_t size);
-    push    src_len
+    sub esp, 16                 ; to keep stack aligned
+    mov dword [esp], src_len
     call    malloc
-    add     esp, 4
+    add     esp, 16
   
     ; check if NULL retured
     test    eax, eax
@@ -32,21 +33,24 @@ main:
     mov     esi, eax
 
     ; void *memcpy(void *dest, const void *src, size_t n);
-    push    src_len          ; n
-    push    src              ; src
-    push    esi              ; dest
+    sub esp, 16                 ; to keep stack aligned
+    mov dword [esp + 8], src_len
+    mov dword [esp + 4], src
+    mov dword [esp], esi
     call    memcpy
-    add     esp, 12
+    add     esp, 16
 
     ; int puts(const char *s);
-    push    esi
+    sub esp, 16                 ; to keep stack aligned
+    mov dword [esp], esi
     call    puts
-    add     esp, 4
+    add     esp, 16
 
     ; void free(void *ptr);
-    push    esi
+    sub esp, 16                 ; to keep stack aligned
+    mov dword [esp], esi
     call    free
-    add     esp, 4
+    add     esp, 16
 
     xor     eax, eax         ; return 0
     jmp     .done

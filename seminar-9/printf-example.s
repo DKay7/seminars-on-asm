@@ -29,28 +29,34 @@ main:
     mov     ebp, esp
 
     ; printf("Enter an integer: ");
-    push    fmt_hello
+
+    sub esp, 16                 ; to keep stack aligned
+    mov dword [esp], fmt_hello
     call    printf
-    add     esp, 4
+    add     esp, 16
 
     ; scanf("%d", &x);
-    push    x           ; x is ADDRESS HERE
-    push    fmt_in
+
+    sub esp, 16                 ; to keep stack aligned
+    mov dword [esp + 4], x      ; x is ADDRESS HERE
+    mov dword [esp    ], fmt_in
     call    scanf
-    add     esp, 8
+    add     esp, 16
   
     ; check that everything is readed properly
     ; 
     cmp     eax, 1
     jne     .input_error
 
-    ; printf(You entered: %d.\nIs odd? : %d\n%d + 2 = %d\n, x, x & 1 == 0 ? "true":"false", x, x + 2);
+    ; printf("You entered: %d.\nIs odd? : %d\n%d + 2 = %d\n, x, x & 1 == 0 ? "true":"false", x, x + 2);
+
+    sub esp, 16
 
     mov eax, [x]
     add eax, 2
-    push eax
-
-    push dword [x]
+    mov [esp + 16], eax
+    mov ebx, [x]
+    mov dword [esp + 12], ebx
 
     mov eax, str_true
     mov ebx, str_false
@@ -59,10 +65,12 @@ main:
     and ecx, 1
     cmp ecx, 0
     cmove eax, ebx
-    push eax
+    mov dword [esp + 8], eax
 
-    push    dword [x]
-    push    fmt_out
+    mov ebx, [x]
+    mov dword [esp + 4], ebx
+    mov dword [esp    ], fmt_out
+
     call    printf
     add     esp, 16
 
@@ -70,9 +78,10 @@ main:
     jmp     .done
 
 .input_error:
-    push    fmt_err
+    sub esp, 16
+    mov dword [esp], fmt_err
     call    printf
-    add     esp, 4
+    add     esp, 16
 
     mov     eax, 1      ; return 1
 

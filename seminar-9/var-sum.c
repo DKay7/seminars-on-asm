@@ -5,12 +5,18 @@
 
 int sum(int count, ...) {
   va_list args;
+
   va_start(args, count);
+  void* stack_ptr = &count + 1;
 
   int s = 0;
 
   for (int i = 0; i < count; i++) {
     s += va_arg(args, int);
+
+    s += *(int*)stack_ptr;
+    stack_ptr += sizeof(int);
+
   }
 
   va_end(args);
