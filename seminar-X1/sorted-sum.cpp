@@ -34,7 +34,7 @@ int main() {
 
   float sorted_sum = sum(values);
 
-  std::cout << std::fixed << std::setprecision(1);
+  std::cout << std::fixed << std::setprecision(20);
 
   std::cout << "unsorted sum = " << unsorted_sum << '\n';
   std::cout << "sorted sum   = " << sorted_sum << '\n';

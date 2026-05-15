@@ -7,6 +7,8 @@
 float divide(float a, float b);
 
 int main() {
+  float a = NAN;
+  printf("%d\n", NAN == NAN);
 
   printf("%.4f\n", divide(1.f, 4.f));
   printf("%.4f\n", divide(+1.f, 0.f));
@@ -19,6 +21,7 @@ int main() {
 
 float divide(float a, float b) {
   // bad style:
+  //
   // assert(a == a);
   // assert(b == b);
 
